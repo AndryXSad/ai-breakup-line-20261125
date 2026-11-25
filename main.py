@@ -25,14 +25,26 @@ LINE = (
 )
 
 
-def main() -> int:
-    # Gate, mirrored locally: 1 to 200 characters, not only whitespace.
-    text = LINE
-    if not 1 <= len(text) <= 200 or not text.strip():
+MAX_CHARS = 200
+
+
+def validate_line(text: str) -> None:
+    """Gate, mirrored locally: 1 to 200 characters, not only whitespace."""
+    if not 1 <= len(text) <= MAX_CHARS or not text.strip():
         raise ValueError("entry line fails the 1-200 character gate")
+
+
+def resolve_output_dir() -> str:
+    """Output directory from MAKEFUN_OUTPUT_DIR, default /output."""
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
-    path = os.path.join(out_dir, "entry.txt")
+    return out_dir
+
+
+def main() -> int:
+    text = LINE
+    validate_line(text)
+    path = os.path.join(resolve_output_dir(), "entry.txt")
     with open(path, "wb") as handle:
         handle.write(text.encode("utf-8"))
     return 0
